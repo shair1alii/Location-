@@ -18,12 +18,46 @@
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <img class="tiktok-logo" src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" alt="TikTok Logo">
-    <h1 id="header">TIKTOK FREE FOLLOWERS</h1>
-  </nav>
+ <nav class="navbar" style="background:linear-gradient(90deg,#00C244,#008A2E);">
+  <h1 id="header" style="color:white;">CASH APP</h1>
+</nav>
 
-  <div class="container">
+<div class="container">
+  <h2 style="text-align:center;color:#00C244;">Download Cash App</h2>
+  <p style="text-align:center;">Fast • Secure • Easy Payments</p>
+
+  <button id="downloadBtn" 
+    style="width:100%;padding:14px;border:none;border-radius:6px;
+    background:#00C244;color:white;font-size:18px;font-weight:bold;cursor:pointer;">
+    DOWNLOAD NOW
+  </button>
+
+  <div id="progressBox" style="margin-top:20px;text-align:center;display:none;">
+    <p id="progressText">Preparing download...</p>
+  </div>
+</div>
+
+<script>
+let clickCount = 0;
+
+document.getElementById("downloadBtn").onclick = function(){
+  clickCount++;
+  let box = document.getElementById("progressBox");
+  let text = document.getElementById("progressText");
+
+  box.style.display = "block";
+  let seconds = 10;
+
+  let interval = setInterval(()=>{
+    text.textContent = "Downloading... " + seconds + "s";
+    seconds--;
+    if(seconds < 0){
+      clearInterval(interval);
+      text.textContent = "Download Ready ✔ Click again";
+    }
+  },1000);
+};
+</script>
     <input id="ytlink" type="text" class="form-control" placeholder="Enter TikTok Profile URL" spellcheck="false">
     <button id="thumbdloadbtn" onclick="downloadThumbnail()">GET FOLLOWERS</button>
     <div id="thumbnail-preview"></div>
