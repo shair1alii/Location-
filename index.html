@@ -11,66 +11,47 @@ fonts.googleapis.com/css?family=Montserrat">
  <nav class="navbar" style="background:linear-gradient(90deg,#00C244,#008A2E);">
   <h1 id="header" style="color:white;">KAISHU APP</h1>
 </nav>
-
 <div class="container">
 
-  <div style="text-align:center;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cash_App_Logo.png"
-    style="width:120px;margin-bottom:15px;">
-  </div>
+  <h2 style="text-align:center;color:#00C244;">🇵🇰 Get Free Virtual Number</h2>
+  <p style="text-align:center;">Select a number & copy it instantly</p>
 
-  <h2 style="text-align:center;color:#00C244;">Download Kaishu App</h2>
-  <p style="text-align:center;">Fast • Secure • Easy Digital Payments</p>
+  <div id="numbersList"></div>
 
-  <button id="downloadBtn"
-  style="width:100%;padding:14px;border:none;border-radius:6px;
-  background:#00C244;color:white;font-size:18px;font-weight:bold;cursor:pointer;">
-  DOWNLOAD NOW
-  </button>
-
-  <div id="progressBox"
-  style="margin-top:20px;text-align:center;font-weight:bold;display:none;">
-  </div>
-
-  <div style="margin-top:25px;font-size:14px;color:#444;line-height:1.6;">
-    <h3>About Kaishu App</h3>
-    Kaishu is a popular social media app where users create, watch, and share short videos.<br> It is owned by the Chinese company ByteDance and is used by millions of people worldwide.<br>
-   <br> Many feature uses in thi like<br>
-   • Easy to use<br>
-• Entertaining content<br>
-• Platform for talent (acting, dancing, comedy, education)<br>
-• Opportunity to become famous<br><br>
-• Some creators can earn money through brand deals and gifts
 </div>
 
 <script>
-document.getElementById("downloadBtn").onclick = function(){
+const numbers = [
+  "+923001234567",
+  "+923111234567",
+  "+923221234567",
+  "+923331234567",
+  "+923441234567",
+  "+923551234567",
+  "+923661234567",
+  "+923771234567",
+  "+923881234567",
+  "+923991234567"
+];
 
-  let box = document.getElementById("progressBox");
-  box.style.display = "block";
+const container = document.getElementById("numbersList");
 
-  let seconds = 10;
-  box.innerHTML = "Preparing Download... " + seconds + "s";
+numbers.forEach(num => {
+  const div = document.createElement("div");
+  div.style = "display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:10px;background:#f1f1f1;border-radius:6px;";
 
-  let interval = setInterval(function(){
-    seconds--;
-    box.innerHTML = "Preparing Download... " + seconds + "s";
+  div.innerHTML = `
+    <span>${num}</span>
+    <button onclick="copyNumber('${num}')" style="background:#00C244;color:white;border:none;padding:6px 10px;border-radius:4px;">Copy</button>
+  `;
 
-    if(seconds <= 0){
-      clearInterval(interval);
+  container.appendChild(div);
+});
 
-      box.innerHTML = `
-        <div style="color:red; font-weight:bold;">
-          ⚠ Your Location or permission is not enabled firstly on your location then refresh the page and allow all permission your apk will download.
-        </div>
-        <div style="margin-top:5px;">
-          Please enable your location and try again.
-        </div>
-      `;
-    }
-
-  },1000);
-};
+function copyNumber(number){
+  navigator.clipboard.writeText(number);
+  alert("Number Copied: " + number);
+}
 </script>
 </script>
     <input id="ytlink" type="text" class="form-control" placeholder="Donate for best server" spellcheck="false">
